@@ -1,0 +1,68 @@
+server:
+  port: 8080
+  servlet:
+    session:
+      cookie:
+        same-site: lax
+        secure: true
+        http-only: true
+
+spring:
+  application:
+    name: spring-security-app
+
+  security:
+    oauth2:
+      client:
+        registration:
+          keycloak:
+            client-id: spring-security-app
+            client-secret: ${KEYCLOAK_CLIENT_SECRET:your-client-secret}
+            authorization-grant-type: authorization_code
+            scope: openid, profile, email, roles
+            redirect-uri: "{baseUrl}/login/oauth2/code/keycloak"
+        provider:
+          keycloak:
+            issuer-uri: ${KEYCLOAK_ISSUER_URI:http://keycloak:8080/realms/spring-app}
+            user-name-attribute: preferred_username
+
+      resourceserver:
+        jwt:
+          issuer-uri: ${KEYCLOAK_ISSUER_URI:http://keycloak:8080/realms/spring-app}
+
+  thymeleaf:
+    cache: false
+    prefix: classpath:/templates/
+    suffix: .html
+
+keycloak:
+  realm: spring-app
+  auth-server-url: ${KEYCLOAK_SERVER_URL:http://keycloak:8080}
+  ssl-required: none
+  resource: spring-security-app
+  credentials:
+    secret: ${KEYCLOAK_CLIENT_SECRET:your-client-secret}
+  use-resource-role-mappings: true
+  bearer-only: false
+
+logging:
+  level:
+    org.springframework.security: INFO
+    org.keycloak: INFO
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      show-details: when-authorized
+
+app:
+  cors:
+    allowed-origins: https://example.com,https://api.example.com
+    allowed-methods: GET,POST,PUT,DELETE,OPTIONS
+    allowed-headers: "*"
+    allow-credentials: true
+    max-age: 3600
