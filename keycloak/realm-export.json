@@ -46,13 +46,17 @@
       "secret": "PqGhk6wTBHRfEGjmh9nBqkjN6oZsC1A3",
       "redirectUris": [
         "https://example.com/*",
+        "http://example.com/*",
         "https://api.example.com/*",
+        "http://api.example.com/*",
         "http://localhost:8080/*",
         "http://localhost/*"
       ],
       "webOrigins": [
         "https://example.com",
+        "http://example.com",
         "https://api.example.com",
+        "http://api.example.com",
         "http://localhost:8080",
         "http://localhost"
       ],
@@ -64,9 +68,7 @@
       "standardFlowEnabled": true,
       "implicitFlowEnabled": false,
       "fullScopeAllowed": true,
-      "attributes": {
-        "pkce.code.challenge.method": "S256"
-      },
+      "attributes": {},
       "protocolMappers": [
         {
           "name": "realm-roles",

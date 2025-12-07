@@ -23,12 +23,16 @@ spring:
             redirect-uri: "{baseUrl}/login/oauth2/code/keycloak"
         provider:
           keycloak:
+            authorization-uri: http://localhost:8080/realms/spring-app/protocol/openid-connect/auth
+            token-uri: ${KEYCLOAK_ISSUER_URI:http://keycloak:8080}/realms/spring-app/protocol/openid-connect/token
+            user-info-uri: ${KEYCLOAK_ISSUER_URI:http://keycloak:8080}/realms/spring-app/protocol/openid-connect/userinfo
+            jwk-set-uri: ${KEYCLOAK_ISSUER_URI:http://keycloak:8080}/realms/spring-app/protocol/openid-connect/certs
             issuer-uri: ${KEYCLOAK_ISSUER_URI:http://keycloak:8080/realms/spring-app}
             user-name-attribute: preferred_username
 
       resourceserver:
         jwt:
-          issuer-uri: ${KEYCLOAK_ISSUER_URI:http://keycloak:8080/realms/spring-app}
+          issuer-uri: ${KEYCLOAK_ISSUER_URI:http://localhost:8080/realms/spring-app}
 
   thymeleaf:
     cache: false
