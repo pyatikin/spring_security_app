@@ -26,16 +26,22 @@ services:
       KC_DB_PASSWORD: keycloak_password
       KEYCLOAK_ADMIN: admin
       KEYCLOAK_ADMIN_PASSWORD: admin
+      # Настройки для работы за прокси
       KC_PROXY: edge
-      KC_HOSTNAME_STRICT: false
       KC_HTTP_ENABLED: true
+      # Используем только hostname-url (НЕ hostname - они конфликтуют!)
+      KC_HOSTNAME_URL: https://example.com
+      KC_HOSTNAME_ADMIN_URL: https://example.com
+      KC_HOSTNAME_STRICT: false
+      KC_HOSTNAME_STRICT_BACKCHANNEL: false
     command:
       - start-dev
       - --import-realm
     volumes:
       - ./keycloak/realm-export.json:/opt/keycloak/data/import/realm-export.json:ro
-    ports:
-      - "8080:8080"
+    # Убираем проброс порта наружу - доступ только через NGINX
+    # ports:
+    #   - "8080:8080"
     depends_on:
       postgres:
         condition: service_healthy
@@ -53,9 +59,8 @@ services:
       dockerfile: Dockerfile
     container_name: spring-app
     environment:
-      KEYCLOAK_SERVER_URL: http://keycloak:8080
-      KEYCLOAK_ISSUER_URI: http://keycloak:8080/realms/spring-app
-      KEYCLOAK_CLIENT_SECRET: PqGhk6wTBHRfEGjmh9nBqkjN6oZsC1A3
+      # Теперь не нужны эти переменные - всё через NGINX
+      SPRING_PROFILES_ACTIVE: default
     depends_on:
       keycloak:
         condition: service_healthy

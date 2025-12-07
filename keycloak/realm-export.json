@@ -46,19 +46,11 @@
       "secret": "PqGhk6wTBHRfEGjmh9nBqkjN6oZsC1A3",
       "redirectUris": [
         "https://example.com/*",
-        "http://example.com/*",
-        "https://api.example.com/*",
-        "http://api.example.com/*",
-        "http://localhost:8080/*",
-        "http://localhost/*"
+        "https://api.example.com/*"
       ],
       "webOrigins": [
         "https://example.com",
-        "http://example.com",
-        "https://api.example.com",
-        "http://api.example.com",
-        "http://localhost:8080",
-        "http://localhost"
+        "https://api.example.com"
       ],
       "protocol": "openid-connect",
       "publicClient": false,
@@ -68,7 +60,9 @@
       "standardFlowEnabled": true,
       "implicitFlowEnabled": false,
       "fullScopeAllowed": true,
-      "attributes": {},
+      "attributes": {
+        "post.logout.redirect.uris": "https://example.com/*"
+      },
       "protocolMappers": [
         {
           "name": "realm-roles",

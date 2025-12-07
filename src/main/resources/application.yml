@@ -6,6 +6,7 @@ server:
         same-site: lax
         secure: true
         http-only: true
+  forward-headers-strategy: framework
 
 spring:
   application:
@@ -17,42 +18,34 @@ spring:
         registration:
           keycloak:
             client-id: spring-security-app
-            client-secret: ${KEYCLOAK_CLIENT_SECRET:your-client-secret}
+            client-secret: PqGhk6wTBHRfEGjmh9nBqkjN6oZsC1A3
             authorization-grant-type: authorization_code
             scope: openid, profile, email, roles
-            redirect-uri: "{baseUrl}/login/oauth2/code/keycloak"
+            redirect-uri: "https://example.com/login/oauth2/code/keycloak"
         provider:
           keycloak:
-            authorization-uri: http://localhost:8080/realms/spring-app/protocol/openid-connect/auth
-            token-uri: ${KEYCLOAK_ISSUER_URI:http://keycloak:8080}/realms/spring-app/protocol/openid-connect/token
-            user-info-uri: ${KEYCLOAK_ISSUER_URI:http://keycloak:8080}/realms/spring-app/protocol/openid-connect/userinfo
-            jwk-set-uri: ${KEYCLOAK_ISSUER_URI:http://keycloak:8080}/realms/spring-app/protocol/openid-connect/certs
-            issuer-uri: ${KEYCLOAK_ISSUER_URI:http://keycloak:8080/realms/spring-app}
+            # Браузер идёт сюда (через NGINX)
+            authorization-uri: https://example.com/realms/spring-app/protocol/openid-connect/auth
+            # Spring App идёт напрямую к Keycloak по внутренней сети Docker
+            token-uri: http://keycloak:8080/realms/spring-app/protocol/openid-connect/token
+            user-info-uri: http://keycloak:8080/realms/spring-app/protocol/openid-connect/userinfo
+            jwk-set-uri: http://keycloak:8080/realms/spring-app/protocol/openid-connect/certs
+            # НЕ используем issuer-uri - избегаем автоконфигурации которая требует доступ к https://example.com
             user-name-attribute: preferred_username
 
       resourceserver:
         jwt:
-          issuer-uri: ${KEYCLOAK_ISSUER_URI:http://localhost:8080/realms/spring-app}
+          jwk-set-uri: http://keycloak:8080/realms/spring-app/protocol/openid-connect/certs
 
   thymeleaf:
     cache: false
     prefix: classpath:/templates/
     suffix: .html
 
-keycloak:
-  realm: spring-app
-  auth-server-url: ${KEYCLOAK_SERVER_URL:http://keycloak:8080}
-  ssl-required: none
-  resource: spring-security-app
-  credentials:
-    secret: ${KEYCLOAK_CLIENT_SECRET:your-client-secret}
-  use-resource-role-mappings: true
-  bearer-only: false
-
 logging:
   level:
-    org.springframework.security: INFO
-    org.keycloak: INFO
+    org.springframework.security: DEBUG
+    org.springframework.security.oauth2: DEBUG
 
 management:
   endpoints:
