@@ -18,6 +18,13 @@
   "quickLoginCheckMilliSeconds": 1000,
   "maxDeltaTimeSeconds": 43200,
   "failureFactor": 5,
+  "ssoSessionIdleTimeout": 1800,
+  "ssoSessionMaxLifespan": 36000,
+  "accessTokenLifespan": 300,
+  "browserFlow": "browser",
+  "registrationFlow": "registration",
+  "directGrantFlow": "direct grant",
+  "resetCredentialsFlow": "reset credentials",
   "roles": {
     "realm": [
       {
@@ -61,7 +68,9 @@
       "implicitFlowEnabled": false,
       "fullScopeAllowed": true,
       "attributes": {
-        "post.logout.redirect.uris": "https://example.com/*"
+        "post.logout.redirect.uris": "http://localhost:8081/* http://localhost:8080/* https://example.com/*",
+        "backchannel.logout.session.required": "true",
+        "backchannel.logout.revoke.offline.tokens": "false"
       },
       "protocolMappers": [
         {

@@ -29,19 +29,18 @@ services:
       # Настройки для работы за прокси
       KC_PROXY: edge
       KC_HTTP_ENABLED: true
-      # Используем только hostname-url (НЕ hostname - они конфликтуют!)
-      KC_HOSTNAME_URL: https://example.com
-      KC_HOSTNAME_ADMIN_URL: https://example.com
+      # Keycloak использует hostname из запроса (от NGINX или localhost)
       KC_HOSTNAME_STRICT: false
+      KC_HOSTNAME_STRICT_HTTPS: false
+      # Разрешаем backchannel запросы (UserInfo, Token introspection) с другим hostname
       KC_HOSTNAME_STRICT_BACKCHANNEL: false
     command:
       - start-dev
       - --import-realm
     volumes:
       - ./keycloak/realm-export.json:/opt/keycloak/data/import/realm-export.json:ro
-    # Убираем проброс порта наружу - доступ только через NGINX
-    # ports:
-    #   - "8080:8080"
+    ports:
+      - "8080:8080"  # Порт для админки Keycloak
     depends_on:
       postgres:
         condition: service_healthy
@@ -88,7 +87,9 @@ services:
       - app
       - keycloak
     networks:
-      - app-network
+      app-network:
+        aliases:
+          - example.com
 
 networks:
   app-network:
